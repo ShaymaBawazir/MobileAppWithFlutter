@@ -3,21 +3,20 @@ import 'package:http/http.dart' as http;
 import '../models/movie.dart';
 
 class ApiService {
-  static const _baseUrl = 'https://api.themoviedb.org/3';
-  static const _apiKey = '<YOUR_API_KEY>';
+  static const String apiKey = '95ef27dd128c20f1166d825fbe35a173';
+  static const String _baseUrl = 'https://api.themoviedb.org/3';
 
-  Future<List<Movie>> fetchPopular() async {
-    final url = Uri.parse('$_baseUrl/movie/popular?api_key=$_apiKey');
-    final res = await http.get(url);
+  Future<List<Movie>> fetchPopularMovies() async {
+    final response = await http.get(
+      Uri.parse('$_baseUrl/movie/popular?api_key=$apiKey&language=en-US&page=1'),
+    );
 
-    if (res.statusCode == 200) {
-      final data = jsonDecode(res.body);
-      final List results = data['results'];
-      return results.map((j) => Movie.fromJson(j)).toList();
-    } else if (res.statusCode == 404) {
-      throw Exception('Not Found');
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List movies = data['results'];
+      return movies.map((json) => Movie.fromJson(json)).toList();
     } else {
-      throw Exception('Server Error: \${res.statusCode}');
+      throw Exception('Failed to load popular movies');
     }
   }
 }

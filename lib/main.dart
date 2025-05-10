@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:movies/providers/favorites_provider.dart';
+import 'package:movies/screens/home_screen.dart';
 import 'package:provider/provider.dart';
-import 'providers/movie_provider.dart';
-import 'providers/favorites_provider.dart';
-import 'screens/home_screen.dart';
+
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()..loadFavorites()),
+      ],
+      child:  MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => MovieProvider()),
-        ChangeNotifierProvider(create: (_) => FavoritesProvider()),
-      ],
-      child: MaterialApp(
-        title: 'Movie Tracker',
-        theme: ThemeData(primarySwatch: Colors.blue),
-        home: const HomeScreen(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Movies App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: HomeScreen(),
     );
   }
 }
